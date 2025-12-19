@@ -194,24 +194,82 @@ public:
 };
 
 vector<vector<int>> OddSquare(int n) {
-        vector<vector<int>> square(n, vector<int>(n, 0));
-        int i = n / 2;
-        int j = n - 1;
-        for (int num = 1; num <= n * n; num++) {
-            square[i][j] = num;
-            if (num % n == 0) {
-                j--;
-            }
-            else {
-                i--;
-                j++;
-            }
-            i += n;
-            i %= n;
-            j += n;
-            j %= n;
+    vector<vector<int>> square(n, vector<int>(n, 0));
+    int i = n / 2;
+    int j = n - 1;
+    for (int num = 1; num <= n * n; num++) {
+        square[i][j] = num;
+        if (num % n == 0) {
+            j--;
+        }
+        else {
+            i--;
+            j++;
+        }
+        i += n;
+        i %= n;
+        j += n;
+        j %= n;
+    }
+    return square;
+}
+
+void rotateSquare(int n, vector<vector<int>>& square) {
+    vector<vector<int>> res(n, vector<int>(n));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            res[n - j - 1][i] = square[i][j];
+        }
+    }
+
+    square = res;
+}
+
+vector<vector<int>> randomizeSquare(int n, vector<vector<int>> square) {
+    int random = rand() % 8;
+    switch (random) {
+    case 0:
+        return square;
+    case 1:
+        rotateSquare(n, square);
+        return square;
+    case 2:
+        rotateSquare(n, square);
+        rotateSquare(n, square);
+        return square;
+    case 3:
+        rotateSquare(n, square);
+        rotateSquare(n, square);
+        rotateSquare(n, square);
+        return square;
+    case 4:
+        for (int i = 0; i < n; i++) {
+            reverse(square[i].begin(), square[i].end());
         }
         return square;
+    case 5:
+        for (int i = 0; i < n; i++) {
+            reverse(square[i].begin(), square[i].end());
+        }
+        rotateSquare(n, square);
+        return square;
+    case 6:
+        for (int i = 0; i < n; i++) {
+            reverse(square[i].begin(), square[i].end());
+        }
+        rotateSquare(n, square);
+        rotateSquare(n, square);
+        return square;
+    case 7:
+        for (int i = 0; i < n; i++) {
+            reverse(square[i].begin(), square[i].end());
+        }
+        rotateSquare(n, square);
+        rotateSquare(n, square);
+        rotateSquare(n, square);
+        return square;
+    }
 }
 
 int main()
@@ -405,10 +463,10 @@ int main()
             cin >> n;
             if (n % 2 != 0) {
                 vector<vector<int>> square = OddSquare(n);
-                int random = (rand() % 11) + 1;
+                vector<vector<int>> shuffle = randomizeSquare(n, square);
                 for (int i = 0; i < n; i++) {
                     for (int j = 0; j < n; j++) {
-                        cout << random * square[i][j] << " ";
+                        cout << shuffle[i][j] << " ";
                     }
                     cout << endl;
                 }
@@ -446,10 +504,10 @@ int main()
                         square[i][j] = (n * n + 1) - square[i][j];
                     }
                 }
-                int random = (rand() % 11) + 1;
+                vector<vector<int>> shuffle = randomizeSquare(n, square);
                 for (i = 0; i < n; i++) {
                     for (j = 0; j < n; j++) {
-                        cout << random * square[i][j] << " ";
+                        cout << shuffle[i][j] << " ";
                     }
                     cout << "\n";
                 }
@@ -465,10 +523,10 @@ int main()
 
                 for (int i = 0; i < innerDegree; ++i) {
                     for (int j = 0; j < innerDegree; ++j) {
-                        M[i][j] = A[i][j];                  
-                        M[i][j + innerDegree] = C[i][j] + squareSize * 2;   
-                        M[i + innerDegree][j] = D[i][j] + squareSize * 3; 
-                        M[i + innerDegree][j + innerDegree] = B[i][j] + squareSize;   
+                        M[i][j] = A[i][j];
+                        M[i][j + innerDegree] = C[i][j] + squareSize * 2;
+                        M[i + innerDegree][j] = D[i][j] + squareSize * 3;
+                        M[i + innerDegree][j + innerDegree] = B[i][j] + squareSize;
                     }
                 }
                 int m = (innerDegree - 1) / 2;
@@ -479,29 +537,29 @@ int main()
                 }
                 for (int i = 0; i < innerDegree; ++i) {
                     for (int j = 0; j < m - 1; ++j) {
-                        swap(M[i][j + innerDegree + (innerDegree - m + 1)], M[i + innerDegree][j + innerDegree + (innerDegree - m + 1)]); // this needs careful index handling
+                        swap(M[i][j + innerDegree + (innerDegree - m + 1)], M[i + innerDegree][j + innerDegree + (innerDegree - m + 1)]);
                     }
                 }
                 for (int i = 0; i < innerDegree; i++) {
                     for (int j = 0; j < m - 1; j++) {
-                        swap(M[i][innerDegree - j - 1], M[i + innerDegree][innerDegree - j - 1]); 
+                        swap(M[i][innerDegree - j - 1], M[i + innerDegree][innerDegree - j - 1]);
                     }
                 }
-                int random = (rand() % 11) + 1;
+                vector<vector<int>> shuffle = randomizeSquare(n, M);
                 for (int i = 0; i < n; i++) {
                     for (int j = 0; j < n; j++) {
-                        cout << random * M[i][j] << " ";
+                        cout << shuffle[i][j] << " ";
                     }
                     cout << "\n";
                 }
             }
         }
-            else if (selection == -1) {
-                break;
-            }
-            else {
-                cout << "Invalid option! Enter 1 for Banking, 2 for Employee List, or 3 for Magic Square" << endl;
-            }
+        else if (selection == -1) {
+            break;
+        }
+        else {
+            cout << "Invalid option! Enter 1 for Banking, 2 for Employee List, or 3 for Magic Square" << endl;
         }
     }
+}
 ```
